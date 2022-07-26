@@ -1,0 +1,8 @@
+{
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json",
+  "version": 2,
+  "projects": {
+    "movie-db": "apps/movie-db",
+    "movie-db-e2e": "apps/movie-db-e2e"
+  }
+}
