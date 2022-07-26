@@ -1,19 +1,40 @@
+import { Movies, getMovie } from '@movie-db/data/movies';
+import { useEffect, useState } from 'react';
 import MovieItem from '../../ui/movie-item/movie-item';
-import styles from './movie-landing.module.scss';
+import SearchBar from '../../ui/search-bar/search-bar';
 
-/* eslint-disable-next-line */
-export interface MovieLandingProps {}
-
-export function MovieLanding(props: MovieLandingProps) {
+export function MovieLanding() {
+  
   const myMovies = ["tt0094641", "tt0074084", "tt0206634",
                     "tt0121766", "tt0245429", "tt0073629",
-                  "tt0120737", "tt0247745", "tt0373074"];
+                    "tt0120737", "tt0247745", "tt0373074"];
 
-  return (
-    <div className="p-4 grid gap-4 grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:w-4/5 xl:mx-auto">
-      {myMovies.map(movie => (<MovieItem key={movie}/>))}
-    </div>
-  );
+  const [isLoading, setLoading] = useState(true);
+  const [movies, setMovies] = useState<Movies>([]);
+
+  const fetchFavMovies = () => Promise.all(myMovies.map((id) => getMovie(id)));
+
+  const handleSearch = (term: string) => console.log(term);
+
+  useEffect(() => {
+    setLoading(true);
+    fetchFavMovies().then((data) => {
+      setMovies(data);
+      setLoading(false);
+      console.debug(data);
+    }).catch((err) => {
+      setLoading(false);
+      console.error(err);
+    })
+  }, []);
+
+  return (<div>
+    <SearchBar onChange={handleSearch}></SearchBar>
+    {isLoading ? (<div>Loading...</div>) : (<div className="p-4 grid gap-4 grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:w-4/5 xl:mx-auto">
+      {movies.map(movie => (<MovieItem key={movie.imdbID} movie={movie}/>))}
+    </div>)}
+  </div>)
+
 }
 
 export default MovieLanding;

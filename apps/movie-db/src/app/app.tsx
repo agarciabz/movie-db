@@ -2,8 +2,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import MovieDetail from '../features/movie-detail/movie-detail';
 import MovieLanding from '../features/movie-landing/movie-landing';
-import styles from './app.module.scss';
-import NxWelcome from './nx-welcome';
 
 export function App() {
   return (
