@@ -10,7 +10,7 @@ export function MovieItem(props: MovieItemProps) {
   };
 
   return (
-    <div className="bg-yellow-200 p-2 flex flex-col">
+    <div className="p-2 flex flex-col space-y-2 border rounded shadow hover:shadow-xl hover:cursor-pointer hover:bg-sky-200 hover:shadow-sky-200">
       <img alt="poster" src={poster}></img>
       <div>{name}</div>
     </div>
