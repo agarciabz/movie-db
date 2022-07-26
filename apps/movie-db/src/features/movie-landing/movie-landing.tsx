@@ -8,8 +8,8 @@ export function MovieLanding(props: MovieLandingProps) {
   const myMovies = [...Array(9).keys()];
 
   return (
-    <div className="p-4">
-      {myMovies.map(movie => (<MovieItem/>))}
+    <div className="p-4 grid gap-4 grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:w-4/5 xl:mx-auto">
+      {myMovies.map(movie => (<MovieItem key={movie}/>))}
     </div>
   );
 }
