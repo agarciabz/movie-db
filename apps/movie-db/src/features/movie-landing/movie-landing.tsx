@@ -24,17 +24,16 @@ export function MovieLanding() {
   const fetchFavMovies = () => Promise.all(myMovies.map((id) => getMovie(id)));
 
   // Añadir paginación con scroll infinito
-  const handleSearch = (term: string) => {
+  const handleSearch = async (term: string) => {
     setLoading(true);
-    searchMovies(term)
-      .then((data) => {
-        setMovies(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.error(err);
-      });
+    try {
+      const movies = await searchMovies(term);
+      setMovies(movies);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
