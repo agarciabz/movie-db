@@ -1,10 +1,10 @@
-import { Movie } from './movies';
+import { Movie, OmdbResponse } from './movies';
 
 const API = `http://www.omdbapi.com/?apikey=b8b8c7dd`;
 
 const mapMovie: (data: any) => Movie = (data) => ({
   imdbID: data.imdbID,
-  poster: data.Poster,
+  poster: data.Poster === 'N/A' ? '' : data.Poster,
   title: data.Title,
   year: data.Year,
 });
@@ -14,14 +14,24 @@ export const getMovie = (id: string) =>
     .then((data) => data.json())
     .then(mapMovie);
 
-export const searchMovies = (term: string) =>
-  fetch(`${API}&s=${term}&type=movie`)
+export const searchMovies = (term: string, page: number) =>
+  fetch(`${API}&s=${term}&type=movie&page=${page}`)
     .then((data) => data.json())
     .then((res) => {
       const results = res.Search;
       if (results) {
-        return results.map(mapMovie);
+        const response: OmdbResponse = {
+          response: res.Response,
+          search: results.map(mapMovie),
+          totalResults: res.totalResults,
+        };
+        return response;
       } else {
-        return [];
+        const response: OmdbResponse = {
+          response: res.Response,
+          search: [],
+          totalResults: 0,
+        };
+        return response;
       }
     });
