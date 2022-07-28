@@ -16,6 +16,8 @@ export function MovieLanding() {
     'tt0373074',
   ];
 
+  const placeholderNum = 24;
+
   const [isLoading, setLoading] = useState(true);
   const [movies, setMovies] = useState<Movies>([]);
 
@@ -50,19 +52,22 @@ export function MovieLanding() {
 
   return (
     <div>
-      <SearchBar onChange={handleSearch}></SearchBar>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <div
-          className="p-4 grid gap-4 grid-cols-2
+      <div className="fixed top-0 left-0 right-0 z-10">
+        <SearchBar onChange={handleSearch}></SearchBar>
+      </div>
+
+      <div
+        className="p-4 grid gap-4 grid-cols-2
           md:grid-cols-4 lg:grid-cols-6 xl:w-4/5 xl:mx-auto"
-        >
-          {movies.map((movie) => (
-            <MovieItem key={movie.imdbID} movie={movie} />
-          ))}
-        </div>
-      )}
+      >
+        {!isLoading
+          ? movies.map((movie) => (
+              <MovieItem key={movie.imdbID} movie={movie} loaded={true} />
+            ))
+          : [...Array(placeholderNum).keys()].map((num) => (
+              <MovieItem key={num} loaded={false} />
+            ))}
+      </div>
     </div>
   );
 }

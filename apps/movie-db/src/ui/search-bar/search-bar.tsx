@@ -26,9 +26,9 @@ export function SearchBar(props: SearchBarProps) {
   };
 
   return (
-    <div className="h-16 bg-teal-500 flex flex-row px-4 py-2 ">
+    <div className="h-16 bg-white border-b-2 flex flex-row px-4 py-2">
       <input
-        className="w-full p-2 rounded-lg xl:w-4/5 xl:mx-auto"
+        className="w-full border p-2 rounded-lg xl:w-4/5 xl:mx-auto"
         onInput={handleInput}
         type="search"
         placeholder="Search movie titles"
