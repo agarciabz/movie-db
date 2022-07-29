@@ -1,4 +1,4 @@
-import { Movie, OmdbResponse } from './movies';
+import { ErrorResponse, Movie, SearchResponse } from './movies';
 
 const API = `http://www.omdbapi.com/?apikey=b8b8c7dd`;
 
@@ -14,24 +14,22 @@ export const getMovie = (id: string) =>
     .then((data) => data.json())
     .then(mapMovie);
 
-export const searchMovies = (term: string, page: number) =>
-  fetch(`${API}&s=${term}&type=movie&page=${page}`)
-    .then((data) => data.json())
-    .then((res) => {
-      const results = res.Search;
-      if (results) {
-        const response: OmdbResponse = {
-          response: res.Response,
-          search: results.map(mapMovie),
-          totalResults: res.totalResults,
-        };
-        return response;
-      } else {
-        const response: OmdbResponse = {
-          response: res.Response,
-          search: [],
-          totalResults: 0,
-        };
-        return response;
-      }
-    });
+export const searchMovies = async (
+  term: string,
+  page: number
+): Promise<SearchResponse | ErrorResponse> => {
+  try {
+    const data = await fetch(`${API}&s=${term}&type=movie&page=${page}`);
+    const res = await data.json();
+    return {
+      response: res.Response,
+      search: (res.Search || []).map(mapMovie),
+      totalResults: res.totalResults || 0,
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      message: 'Service unavailable',
+    };
+  }
+};

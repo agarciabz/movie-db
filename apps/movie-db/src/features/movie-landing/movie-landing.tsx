@@ -2,14 +2,16 @@ import {
   Movies,
   getMovie,
   searchMovies,
-  OmdbResponse,
+  SearchResponse,
+  ErrorResponse,
+  responseIsError,
 } from '@movie-db/data/movies';
 import { useEffect, useRef, useState } from 'react';
 import MovieItem from '../../ui/movie-item/movie-item';
 import SearchBar from '../../ui/search-bar/search-bar';
 
 export function MovieLanding() {
-  const myMovies = [
+  const myFavMovies = [
     'tt0094641',
     'tt0074084',
     'tt0206634',
@@ -37,7 +39,8 @@ export function MovieLanding() {
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const fetchFavMovies = () => Promise.all(myMovies.map((id) => getMovie(id)));
+  const fetchFavMovies = () =>
+    Promise.all(myFavMovies.map((id) => getMovie(id)));
 
   const fetchMovies = (movies: Movies) => {
     setMovies((current) => [...current, ...movies]);
@@ -45,6 +48,10 @@ export function MovieLanding() {
 
   const loadNextPage = () => {
     setPage((current) => current + 1);
+  };
+
+  const handleInput = (term: string) => {
+    setSearch(term);
   };
 
   const areResultsRemaining = () =>
@@ -96,35 +103,26 @@ export function MovieLanding() {
   }, [searchTerm]);
 
   useEffect(() => {
-    console.log('page', page);
     if (page > 0) {
+      // Restart search
       if (page === 1) {
         setMovies([]);
       }
       setLoading(true);
-      searchMovies(searchTerm, page)
-        .then((res: OmdbResponse) => {
-          if (res.search.length) {
-            fetchMovies(res.search);
-            setResults(res.totalResults);
-            resultsRef.current = res.totalResults;
+      searchMovies(searchTerm, page).then(
+        (res: SearchResponse | ErrorResponse) => {
+          if (!responseIsError(res)) {
+            if (res.search.length) {
+              fetchMovies(res.search);
+              setResults(res.totalResults);
+              resultsRef.current = res.totalResults;
+            }
           }
           setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-        });
+        }
+      );
     }
   }, [page]);
-
-  useEffect(() => {
-    console.log('results', results);
-  }, [results]);
-
-  const handleInput = (term: string) => {
-    setSearch(term);
-  };
 
   return (
     <div>
